@@ -33,6 +33,110 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Image gallery functionality with improved touch handling
+    document.querySelectorAll('.product-gallery').forEach(gallery => {
+        const images = gallery.querySelectorAll('img');
+        const prevBtn = gallery.querySelector('.prev');
+        const nextBtn = gallery.querySelector('.next');
+        let currentIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isSwiping = false;
+        let autoPlayInterval;
+
+        function showImage(index) {
+            images.forEach(img => img.classList.remove('active'));
+            images[index].classList.add('active');
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        }
+
+        // Add click event listeners to navigation buttons
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            prevImage();
+            resetAutoPlay();
+        });
+
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            nextImage();
+            resetAutoPlay();
+        });
+
+        // Touch event handling
+        gallery.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            isSwiping = true;
+            resetAutoPlay();
+        }, { passive: true });
+
+        gallery.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            touchEndX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        gallery.addEventListener('touchend', (e) => {
+            if (!isSwiping) return;
+            const swipeDistance = touchEndX - touchStartX;
+            const minSwipeDistance = 50;
+
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                if (swipeDistance > 0) {
+                    prevImage();
+                } else {
+                    nextImage();
+                }
+            }
+            isSwiping = false;
+        }, { passive: true });
+
+        // Keyboard navigation
+        gallery.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevImage();
+                resetAutoPlay();
+            }
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                nextImage();
+                resetAutoPlay();
+            }
+        });
+
+        // Auto-play functionality
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextImage, 5000);
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        // Start auto-play when gallery is visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startAutoPlay();
+                } else {
+                    clearInterval(autoPlayInterval);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(gallery);
+    });
+
     // Handle contact form submission
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -58,58 +162,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add scroll-based navbar background
     const navbar = document.querySelector('.navbar');
+    let lastScroll = 0;
+
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 50) {
             navbar.style.backgroundColor = 'rgba(139, 69, 19, 0.95)';
+            
+            // Hide navbar on scroll down, show on scroll up
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
         } else {
             navbar.style.backgroundColor = 'var(--primary-color)';
+            navbar.style.transform = 'translateY(0)';
         }
-    });
-
-    // Image gallery functionality
-    document.querySelectorAll('.product-gallery').forEach(gallery => {
-        const images = gallery.querySelectorAll('img');
-        const prevBtn = gallery.querySelector('.prev');
-        const nextBtn = gallery.querySelector('.next');
-        let currentIndex = 0;
-
-        function showImage(index) {
-            images.forEach(img => img.classList.remove('active'));
-            images[index].classList.add('active');
-        }
-
-        function nextImage() {
-            currentIndex = (currentIndex + 1) % images.length;
-            showImage(currentIndex);
-        }
-
-        function prevImage() {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            showImage(currentIndex);
-        }
-
-        // Add click event listeners to navigation buttons
-        prevBtn.addEventListener('click', prevImage);
-        nextBtn.addEventListener('click', nextImage);
-
-        // Optional: Add keyboard navigation
-        gallery.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') prevImage();
-            if (e.key === 'ArrowRight') nextImage();
-        });
-
-        // Optional: Add touch swipe support
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        gallery.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        gallery.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            if (touchStartX - touchEndX > 50) nextImage();
-            if (touchEndX - touchStartX > 50) prevImage();
-        });
+        
+        lastScroll = currentScroll;
     });
 }); 

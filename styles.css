@@ -526,12 +526,96 @@ footer {
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
-        padding: 1rem;
+        padding: 0.8rem;
     }
 
     .nav-links {
-        margin-top: 1rem;
+        margin-top: 0.8rem;
         justify-content: center;
+        gap: 1rem;
+    }
+
+    .nav-links a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.2rem;
+        padding: 0 0.5rem;
+    }
+
+    .product-gallery {
+        height: clamp(250px, 60vw, 350px);
+    }
+
+    .gallery-nav {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+
+    .gallery-nav.prev {
+        left: 5px;
+    }
+
+    .gallery-nav.next {
+        right: 5px;
+    }
+
+    /* Improve touch targets */
+    .gallery-nav,
+    .cta-button,
+    .nav-links a {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Add touch feedback */
+    .gallery-nav:active,
+    .cta-button:active,
+    .nav-links a:active {
+        transform: scale(0.95);
+    }
+
+    /* Improve product info readability */
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-info h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-info p {
+        font-size: 0.9rem;
+    }
+
+    /* Optimize contact section for mobile */
+    .contact-info {
+        padding: 1.5rem;
+    }
+
+    .contact-info h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-info p {
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .contact-info a {
+        padding: 0.5rem 0;
+        margin: 0.3rem 0;
+        display: inline-block;
     }
 
     .hero h1 {
@@ -542,67 +626,51 @@ footer {
     .contact h2 {
         font-size: 2rem;
     }
-
-    .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .contact-content {
-        max-width: 90%;
-        padding: 1rem;
-    }
-
-    .language-switch {
-        margin: 1rem 0 0 0;
-    }
-
-    .contact-info {
-        padding: 1.8rem;
-    }
-    
-    .contact-info h3 {
-        margin-bottom: 1.2rem;
-    }
-    
-    .contact-info p {
-        margin-bottom: 1rem;
-    }
-
-    .product-card img {
-        height: clamp(250px, 35vw, 350px);
-    }
 }
 
+/* Small mobile devices */
 @media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .product-gallery {
+        height: clamp(200px, 70vw, 300px);
+    }
+
+    .gallery-nav {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .product-info {
+        padding: 0.8rem;
+    }
+
+    .product-info h3 {
+        font-size: 1rem;
+    }
+
+    .product-info p {
+        font-size: 0.85rem;
+    }
+
     :root {
         --container-padding: 1rem;
         --section-spacing: 3rem;
     }
+}
 
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .contact-content {
-        max-width: 95%;
-        padding: 0.8rem;
-    }
-    
-    .contact-info {
-        padding: 1.5rem;
-    }
-    
-    .contact-info h3 {
-        margin-bottom: 1rem;
-    }
-    
-    .contact-info p {
-        margin-bottom: 0.8rem;
+/* Add smooth touch scrolling */
+@media (hover: none) {
+    .product-gallery {
+        -webkit-overflow-scrolling: touch;
     }
 
-    .product-card img {
-        height: clamp(200px, 30vw, 300px);
+    .gallery-nav {
+        background: rgba(255, 255, 255, 0.9);
     }
 }
 
